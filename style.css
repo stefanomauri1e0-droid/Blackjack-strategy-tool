@@ -45,45 +45,7 @@ header {
 h2 { font-size: 1.5rem; margin-bottom: 5px; }
 .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
 
-/* Griglia pulsanti carte */
-.card-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 24px;
-}
-
-.card-btn {
-    flex: 1 1 calc(20% - 10px);
-    min-width: 50px;
-    padding: 15px 0;
-    font-size: 1.2rem;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    color: white;
-    transition: transform 0.1s, opacity 0.2s;
-}
-.card-btn:active { transform: scale(0.95); }
-.low { background-color: var(--low-card); }
-.neutral { background-color: var(--neutral-card); }
-.high { background-color: var(--high-card); }
-
-/* Statistiche */
-.stats-grid { display: flex; justify-content: space-between; gap: 15px; }
-.stat-box {
-    background: rgba(0,0,0,0.2);
-    padding: 15px;
-    border-radius: 8px;
-    flex: 1;
-    text-align: center;
-}
-.stat-box .label { display: block; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px; }
-.stat-box .value { display: block; font-size: 1.8rem; font-weight: bold; }
-.highlight { color: var(--accent); }
-
-/* Basic Strategy */
+/* Strategy Selectors */
 .strategy-inputs {
     display: flex;
     gap: 15px;
@@ -108,6 +70,61 @@ h2 { font-size: 1.5rem; margin-bottom: 5px; }
 }
 .action-box .label { display: block; color: var(--text-muted); margin-bottom: 10px; }
 .action-result { font-size: 2rem; font-weight: bold; color: var(--accent); text-transform: uppercase; }
+
+/* Card Buttons */
+.card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.card-btn {
+    flex: 1 1 calc(20% - 10px);
+    min-width: 50px;
+    padding: 15px 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    position: relative;
+    transition: transform 0.1s, opacity 0.2s;
+}
+.card-btn:active:not(:disabled) { transform: scale(0.95); }
+.card-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.low { background-color: var(--low-card); }
+.neutral { background-color: var(--neutral-card); }
+.high { background-color: var(--high-card); }
+
+/* Remaining Cards Badge */
+.badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #000;
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 12px;
+    border: 1px solid #333;
+    font-weight: normal;
+}
+
+/* Stats */
+.stats-grid { display: flex; justify-content: space-between; gap: 15px; }
+.stat-box {
+    background: rgba(0,0,0,0.2);
+    padding: 15px;
+    border-radius: 8px;
+    flex: 1;
+    text-align: center;
+}
+.stat-box .label { display: block; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px; }
+.stat-box .value { display: block; font-size: 1.8rem; font-weight: bold; }
+.highlight { color: var(--accent); }
 
 @media (max-width: 600px) {
     .stats-grid, .strategy-inputs { flex-direction: column; }
