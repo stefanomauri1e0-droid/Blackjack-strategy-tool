@@ -116,17 +116,14 @@ window.showCards = function(suit) {
     suitSelector.style.display = 'none';
     cardPickerGrid.style.display = 'flex';
     backBtn.style.display = 'block';
-    cardPickerGrid.innerHTML = ''; // Clear previous
+    cardPickerGrid.innerHTML = ''; 
 
     ranks.forEach(rank => {
         let img = document.createElement('img');
         
-        let folderName = suit;
+        // Applicato .png a tutte le carte senza eccezioni
         let fileName = `${rank}_of_${suit.toLowerCase()}.png`;
-        if(rank === 'queen' || rank === 'king') fileName = `${rank}_of_${suit.toLowerCase()}.jpg`;
-        
-        // Updated path to match the new structure
-        let path = `assets/images/Playing Cards/${folderName}/${fileName}`;
+        let path = `assets/images/Playing%20Cards/${suit}/${fileName}`;
         
         img.src = path;
         img.className = 'modal-card-img';
