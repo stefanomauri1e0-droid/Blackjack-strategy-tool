@@ -10,44 +10,64 @@
     <div class="container">
         <header>
             <h1>Blackjack Pro</h1>
-            <div class="settings">
-                <label for="decks">Number of decks:</label>
-                <input type="number" id="decks" value="6" min="1" max="8">
-                <button id="reset-btn">Reset Shoe</button>
-            </div>
         </header>
 
         <main>
-            <!-- SECTION 1: BASIC STRATEGY -->
+            <!-- SECTION 1: BASIC STRATEGY (Visual Table) -->
             <section class="basic-strategy panel">
-                <h2>Basic Strategy</h2>
-                <p class="subtitle">Enter your hand and the dealer's upcard</p>
+                <h2>Basic Strategy Simulator</h2>
+                <p class="subtitle">Click the empty slots to place the dealt cards</p>
                 
-                <div class="strategy-inputs">
-                    <div class="input-group">
-                        <label>Your Card 1</label>
-                        <select id="p-card-1" class="strategy-select"></select>
+                <div class="blackjack-table">
+                    <!-- Dealer Side -->
+                    <div class="dealer-area">
+                        <div class="table-label">Dealer's Hand</div>
+                        <div class="card-slots">
+                            <div class="card-slot static-back">
+                                <img src="Playing Cards/red_card_back.png" alt="Card Back">
+                            </div>
+                            <div class="card-slot interactive-slot" id="dealer-slot" data-role="dealer" onclick="openCardSelector('dealer')">
+                                <span class="plus-icon">+</span>
+                                <img src="" alt="" class="selected-card-img" style="display: none;">
+                            </div>
+                        </div>
                     </div>
-                    <div class="input-group">
-                        <label>Your Card 2</label>
-                        <select id="p-card-2" class="strategy-select"></select>
-                    </div>
-                    <div class="input-group">
-                        <label>Dealer Card</label>
-                        <select id="d-card" class="strategy-select"></select>
+
+                    <!-- Player Side -->
+                    <div class="player-area">
+                        <div class="table-label">Your Hand</div>
+                        <div class="card-slots">
+                            <div class="card-slot interactive-slot" id="player-slot-1" data-role="player1" onclick="openCardSelector('player1')">
+                                <span class="plus-icon">+</span>
+                                <img src="" alt="" class="selected-card-img" style="display: none;">
+                            </div>
+                            <div class="card-slot interactive-slot" id="player-slot-2" data-role="player2" onclick="openCardSelector('player2')">
+                                <span class="plus-icon">+</span>
+                                <img src="" alt="" class="selected-card-img" style="display: none;">
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="action-box">
                     <span class="label">Recommended Action:</span>
-                    <span class="action-result" id="action-result">Waiting...</span>
+                    <span class="action-result" id="action-result">Waiting for cards...</span>
                 </div>
             </section>
 
-            <!-- SECTION 2: CARD COUNTER -->
+            <!-- SECTION 2: CARD COUNTER (Merged with Settings) -->
             <section class="card-counter panel">
-                <h2>Card Counter (Hi-Lo)</h2>
-                <p class="subtitle">Click the cards as they are dealt on the table</p>
+                <div class="counter-header">
+                    <div class="titles">
+                        <h2>Card Counter (Hi-Lo)</h2>
+                        <p class="subtitle">Click the cards as they are dealt</p>
+                    </div>
+                    <div class="settings">
+                        <label for="decks">Decks:</label>
+                        <input type="number" id="decks" value="6" min="1" max="8">
+                        <button id="reset-btn">Reset Shoe</button>
+                    </div>
+                </div>
                 
                 <div class="card-grid">
                     <!-- Low Cards (+1) -->
@@ -87,6 +107,26 @@
             </section>
         </main>
     </div>
+
+    <!-- MODAL FOR CARD SELECTION -->
+    <div id="card-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h3>Select Suit</h3>
+            <div class="suit-selector">
+                <button onclick="showCards('Hearts')">♥ Hearts</button>
+                <button onclick="showCards('Diamonds')">♦ Diamonds</button>
+                <button onclick="showCards('Clubs')">♣ Clubs</button>
+                <button onclick="showCards('Spades')">♠ Spades</button>
+            </div>
+            
+            <div id="card-picker-grid" class="card-picker-grid" style="display: none;">
+                <!-- Cards will be injected here by JS -->
+            </div>
+            <button id="back-to-suits" style="display: none;" onclick="resetModalToSuits()">Back to Suits</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
