@@ -120,13 +120,13 @@ window.showCards = function(suit) {
 
     ranks.forEach(rank => {
         let img = document.createElement('img');
-        // Maps the standard filename format, e.g., "Playing Cards/Hearts/2_of_hearts.png"
+        
         let folderName = suit;
         let fileName = `${rank}_of_${suit.toLowerCase()}.png`;
-        // Handle jpg edge cases based on context provided earlier
         if(rank === 'queen' || rank === 'king') fileName = `${rank}_of_${suit.toLowerCase()}.jpg`;
         
-        let path = `Playing Cards/${folderName}/${fileName}`;
+        // Updated path to match the new structure
+        let path = `assets/images/Playing Cards/${folderName}/${fileName}`;
         
         img.src = path;
         img.className = 'modal-card-img';
@@ -137,7 +137,7 @@ window.showCards = function(suit) {
 
 function mapRankToValue(rank) {
     if (rank === 'ace') return 'A';
-    if (rank === 'jack' || rank === 'queen' || rank === 'king') return '10'; // Strategy maps face cards to 10
+    if (rank === 'jack' || rank === 'queen' || rank === 'king') return '10'; 
     return rank;
 }
 
@@ -152,7 +152,7 @@ window.selectCard = function(rank, imgPath) {
     imgEl.src = imgPath;
     imgEl.style.display = 'block';
     plusEl.style.display = 'none';
-    slotEl.style.border = 'none'; // Remove dashed border once filled
+    slotEl.style.border = 'none'; 
 
     selectedHands[currentActiveSlot] = mapRankToValue(rank);
     
