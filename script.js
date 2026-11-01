@@ -5,14 +5,13 @@ let totalCards = totalDecks * CARDS_PER_DECK;
 let cardsDealt = 0;
 let runningCount = 0;
 let remainingCards = {};
+let isRemovingMode = true; // State for Add/Remove toggle
 
 // --- STRATEGY STATE ---
-let selectedHands = {
-    dealer: null,
-    player1: null,
-    player2: null
-};
-let currentActiveSlot = null; // Tracks which table slot was clicked
+let selectedHands = { dealer: null, player1: null, player2: null };
+// Track exact identities to enforce deck limits (e.g. "king_of_clubs")
+let selectedFullCards = { dealer: null, player1: null, player2: null }; 
+let currentActiveSlot = null;
 
 const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king', 'ace'];
 const cardValues = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
@@ -25,6 +24,10 @@ const trueCountDisplay = document.getElementById('true-count');
 const cardsLeftDisplay = document.getElementById('cards-left');
 const cardBtns = document.querySelectorAll('.card-btn');
 
+const modeRemoveBtn = document.getElementById('mode-remove');
+const modeAddBtn = document.getElementById('mode-add');
+
+const strategyDecksSelect = document.getElementById('strategy-decks');
 const actionResult = document.getElementById('action-result');
 const modal = document.getElementById('card-modal');
 const suitSelector = document.querySelector('.suit-selector');
@@ -45,9 +48,23 @@ function resetShoe() {
     cardValues.forEach(val => {
         remainingCards[val] = totalDecks * 4;
     });
-
     updateDisplay();
 }
+
+// --- ADD / REMOVE TOGGLE LOGIC ---
+modeRemoveBtn.addEventListener('click', () => {
+    isRemovingMode = true;
+    modeRemoveBtn.classList.add('active');
+    modeAddBtn.classList.remove('active');
+    updateDisplay();
+});
+
+modeAddBtn.addEventListener('click', () => {
+    isRemovingMode = false;
+    modeAddBtn.classList.add('active');
+    modeRemoveBtn.classList.remove('active');
+    updateDisplay();
+});
 
 function updateDisplay() {
     runningCountDisplay.textContent = runningCount;
@@ -64,25 +81,45 @@ function updateDisplay() {
     else if (trueCount <= -1) trueCountDisplay.style.color = '#ef4444';
     else trueCountDisplay.style.color = '#ffd700';
 
+    let maxCopies = totalDecks * 4;
+
     cardBtns.forEach(btn => {
         let val = btn.getAttribute('data-val');
         let rem = remainingCards[val];
         btn.querySelector('.badge').textContent = rem;
-        btn.disabled = rem <= 0;
+        
+        // Button disable logic flips based on mode
+        if (isRemovingMode) {
+            btn.disabled = rem <= 0;
+        } else {
+            btn.disabled = rem >= maxCopies;
+        }
     });
 }
 
-// --- HI-LO LOGIC ---
+// --- HI-LO MATH ENGINE ---
 cardBtns.forEach(btn => {
     btn.addEventListener('click', () => {
         let val = btn.getAttribute('data-val');
-        if (remainingCards[val] <= 0) return;
+        let maxCopies = totalDecks * 4;
 
-        remainingCards[val]--;
-        cardsDealt++;
+        if (isRemovingMode) {
+            if (remainingCards[val] <= 0) return;
+            remainingCards[val]--;
+            cardsDealt++;
 
-        if (['2','3','4','5','6'].includes(val)) runningCount += 1;
-        else if (['10','J','Q','K','A'].includes(val)) runningCount -= 1;
+            // Subtracting from deck
+            if (['2','3','4','5','6'].includes(val)) runningCount += 1;
+            else if (['10','J','Q','K','A'].includes(val)) runningCount -= 1;
+        } else {
+            if (remainingCards[val] >= maxCopies) return;
+            remainingCards[val]++;
+            cardsDealt--;
+
+            // Adding BACK to deck (invert logic)
+            if (['2','3','4','5','6'].includes(val)) runningCount -= 1;
+            else if (['10','J','Q','K','A'].includes(val)) runningCount += 1;
+        }
 
         updateDisplay();
     });
@@ -92,20 +129,28 @@ resetBtn.addEventListener('click', resetShoe);
 decksInput.addEventListener('change', resetShoe);
 
 // --- MODAL & VISUAL SELECTION LOGIC ---
+
+// Reset Table if Strategy Decks change to avoid illegal states
+strategyDecksSelect.addEventListener('change', () => {
+    ['dealer', 'player1', 'player2'].forEach(role => {
+        let slotId = role === 'dealer' ? 'dealer-slot' : role === 'player1' ? 'player-slot-1' : 'player-slot-2';
+        let slotEl = document.getElementById(slotId);
+        slotEl.querySelector('img.selected-card-img').style.display = 'none';
+        slotEl.querySelector('.plus-icon').style.display = 'block';
+        slotEl.style.border = ''; 
+        selectedHands[role] = null;
+        selectedFullCards[role] = null;
+    });
+    evaluateBasicStrategy();
+});
+
 window.openCardSelector = function(role) {
     currentActiveSlot = role;
     modal.style.display = 'block';
     resetModalToSuits();
 }
-
-window.closeModal = function() {
-    modal.style.display = 'none';
-}
-
-window.onclick = function(event) {
-    if (event.target == modal) closeModal();
-}
-
+window.closeModal = function() { modal.style.display = 'none'; }
+window.onclick = function(event) { if (event.target == modal) closeModal(); }
 window.resetModalToSuits = function() {
     suitSelector.style.display = 'flex';
     cardPickerGrid.style.display = 'none';
@@ -118,16 +163,30 @@ window.showCards = function(suit) {
     backBtn.style.display = 'block';
     cardPickerGrid.innerHTML = ''; 
 
+    let strategyMaxDecks = parseInt(strategyDecksSelect.value); // 1, 2, or 3
+
     ranks.forEach(rank => {
-        let img = document.createElement('img');
-        
-        // Applicato .png a tutte le carte senza eccezioni
         let fileName = `${rank}_of_${suit.toLowerCase()}.png`;
-        let path = `assets/images/Playing%20Cards/${suit}/${fileName}`;
+        let exactCardId = `${rank}_of_${suit.toLowerCase()}`;
         
+        // Count how many copies of this exact card are already on the table
+        let countOnTable = 0;
+        for (let key in selectedFullCards) {
+            if (selectedFullCards[key] === exactCardId) countOnTable++;
+        }
+
+        let img = document.createElement('img');
+        let path = `assets/images/Playing%20Cards/${suit}/${fileName}`;
         img.src = path;
         img.className = 'modal-card-img';
-        img.onclick = () => selectCard(rank, path);
+        
+        // Disable card in UI if table limit reached
+        if (countOnTable >= strategyMaxDecks) {
+            img.classList.add('disabled');
+        } else {
+            img.onclick = () => selectCard(rank, path, exactCardId);
+        }
+        
         cardPickerGrid.appendChild(img);
     });
 }
@@ -138,7 +197,7 @@ function mapRankToValue(rank) {
     return rank;
 }
 
-window.selectCard = function(rank, imgPath) {
+window.selectCard = function(rank, imgPath, exactCardId) {
     let slotId = currentActiveSlot === 'dealer' ? 'dealer-slot' : 
                  currentActiveSlot === 'player1' ? 'player-slot-1' : 'player-slot-2';
     
@@ -152,6 +211,7 @@ window.selectCard = function(rank, imgPath) {
     slotEl.style.border = 'none'; 
 
     selectedHands[currentActiveSlot] = mapRankToValue(rank);
+    selectedFullCards[currentActiveSlot] = exactCardId;
     
     closeModal();
     evaluateBasicStrategy();
