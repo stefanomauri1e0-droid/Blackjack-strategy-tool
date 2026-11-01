@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,34 +11,63 @@
         <header>
             <h1>Blackjack Pro</h1>
             <div class="settings">
-                <label for="decks">Numero di mazzi:</label>
+                <label for="decks">Number of decks:</label>
                 <input type="number" id="decks" value="6" min="1" max="8">
-                <button id="reset-btn">Reset Tavolo</button>
+                <button id="reset-btn">Reset Shoe</button>
             </div>
         </header>
 
         <main>
-            <!-- SEZIONE 1: CONTEGGIO CARTE -->
+            <!-- SECTION 1: BASIC STRATEGY -->
+            <section class="basic-strategy panel">
+                <h2>Basic Strategy</h2>
+                <p class="subtitle">Enter your hand and the dealer's upcard</p>
+                
+                <div class="strategy-inputs">
+                    <div class="input-group">
+                        <label>Your Card 1</label>
+                        <select id="p-card-1" class="strategy-select"></select>
+                    </div>
+                    <div class="input-group">
+                        <label>Your Card 2</label>
+                        <select id="p-card-2" class="strategy-select"></select>
+                    </div>
+                    <div class="input-group">
+                        <label>Dealer Card</label>
+                        <select id="d-card" class="strategy-select"></select>
+                    </div>
+                </div>
+
+                <div class="action-box">
+                    <span class="label">Recommended Action:</span>
+                    <span class="action-result" id="action-result">Waiting...</span>
+                </div>
+            </section>
+
+            <!-- SECTION 2: CARD COUNTER -->
             <section class="card-counter panel">
-                <h2>Contatore Carte (Hi-Lo)</h2>
-                <p class="subtitle">Clicca le carte man mano che escono sul tavolo</p>
+                <h2>Card Counter (Hi-Lo)</h2>
+                <p class="subtitle">Click the cards as they are dealt on the table</p>
                 
                 <div class="card-grid">
-                    <button class="card-btn low" data-val="2">2</button>
-                    <button class="card-btn low" data-val="3">3</button>
-                    <button class="card-btn low" data-val="4">4</button>
-                    <button class="card-btn low" data-val="5">5</button>
-                    <button class="card-btn low" data-val="6">6</button>
+                    <!-- Low Cards (+1) -->
+                    <button class="card-btn low" data-val="2">2 <span class="badge"></span></button>
+                    <button class="card-btn low" data-val="3">3 <span class="badge"></span></button>
+                    <button class="card-btn low" data-val="4">4 <span class="badge"></span></button>
+                    <button class="card-btn low" data-val="5">5 <span class="badge"></span></button>
+                    <button class="card-btn low" data-val="6">6 <span class="badge"></span></button>
                     
-                    <button class="card-btn neutral" data-val="7">7</button>
-                    <button class="card-btn neutral" data-val="8">8</button>
-                    <button class="card-btn neutral" data-val="9">9</button>
+                    <!-- Neutral Cards (0) -->
+                    <button class="card-btn neutral" data-val="7">7 <span class="badge"></span></button>
+                    <button class="card-btn neutral" data-val="8">8 <span class="badge"></span></button>
+                    <button class="card-btn neutral" data-val="9">9 <span class="badge"></span></button>
                     
-                    <button class="card-btn high" data-val="10">10</button>
-                    <button class="card-btn high" data-val="J">J</button>
-                    <button class="card-btn high" data-val="Q">Q</button>
-                    <button class="card-btn high" data-val="K">K</button>
-                    <button class="card-btn high" data-val="A">A</button>
+                    <!-- High Cards (-1) -->
+                    <button class="card-btn high" data-val="10">10 <span class="badge"></span></button>
+                    <button class="card-btn high" data-val="J">J <span class="badge"></span></button>
+                    <button class="card-btn high" data-val="Q">Q <span class="badge"></span></button>
+                    <button class="card-btn high" data-val="K">K <span class="badge"></span></button>
+                    <button class="card-btn high" data-val="A">A <span class="badge"></span></button>
                 </div>
 
                 <div class="stats-grid">
@@ -51,35 +80,9 @@
                         <span class="value highlight" id="true-count">0.00</span>
                     </div>
                     <div class="stat-box">
-                        <span class="label">Carte Rimaste</span>
+                        <span class="label">Cards Left</span>
                         <span class="value" id="cards-left">312</span>
                     </div>
-                </div>
-            </section>
-
-            <!-- SEZIONE 2: BASIC STRATEGY -->
-            <section class="basic-strategy panel">
-                <h2>Basic Strategy</h2>
-                <p class="subtitle">Inserisci la tua mano e la carta scoperta del banco</p>
-                
-                <div class="strategy-inputs">
-                    <div class="input-group">
-                        <label>Tua Carta 1</label>
-                        <select id="p-card-1" class="strategy-select"></select>
-                    </div>
-                    <div class="input-group">
-                        <label>Tua Carta 2</label>
-                        <select id="p-card-2" class="strategy-select"></select>
-                    </div>
-                    <div class="input-group">
-                        <label>Carta Banco</label>
-                        <select id="d-card" class="strategy-select"></select>
-                    </div>
-                </div>
-
-                <div class="action-box">
-                    <span class="label">Mossa Consigliata:</span>
-                    <span class="action-result" id="action-result">Attesa...</span>
                 </div>
             </section>
         </main>
