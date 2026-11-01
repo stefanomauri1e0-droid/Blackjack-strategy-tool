@@ -48,6 +48,10 @@ header h1 {
 h2 { font-size: 1.5rem; margin-bottom: 5px; color: var(--accent); }
 .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
 
+/* Customizations for Basic Strategy Section */
+.strategy-title { color: #ef4444; } /* Red color for title */
+.strategy-subtitle { font-size: 0.75rem; margin-bottom: 15px; } /* Smaller subtitle */
+
 /* Visual Blackjack Table */
 .blackjack-table {
     display: flex;
