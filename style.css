@@ -1,9 +1,9 @@
 :root {
-    --bg-dark: #0f172a;
-    --panel-bg: #1e293b;
+    --bg-main: #0a4f36; /* Casino Green */
+    --panel-bg: #111827; /* Very dark blue/black for panels */
     --text-main: #f8fafc;
     --text-muted: #94a3b8;
-    --accent: #38bdf8;
+    --accent: #ffd700; /* Casino Gold */
     --low-card: #22c55e;
     --neutral-card: #64748b;
     --high-card: #ef4444;
@@ -12,57 +12,117 @@
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
 
 body {
-    background-color: var(--bg-dark);
+    background-color: var(--bg-main);
+    background-image: radial-gradient(circle, #0e6b49 0%, #063121 100%);
     color: var(--text-main);
     padding: 20px;
     display: flex;
     justify-content: center;
+    min-height: 100vh;
 }
 
 .container { max-width: 800px; width: 100%; }
 
 header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    text-align: center;
     margin-bottom: 30px;
-    flex-wrap: wrap;
-    gap: 15px;
 }
 
-.settings { display: flex; align-items: center; gap: 10px; }
-.settings input { width: 60px; padding: 5px; background: var(--panel-bg); color: white; border: 1px solid var(--text-muted); border-radius: 4px; }
-#reset-btn { background: var(--accent); color: #000; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+header h1 {
+    font-size: 3rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+}
 
 .panel {
-    background-color: var(--panel-bg);
+    background-color: rgba(17, 24, 39, 0.95);
     border-radius: 12px;
     padding: 24px;
     margin-bottom: 24px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+    border: 1px solid #1f2937;
 }
 
-h2 { font-size: 1.5rem; margin-bottom: 5px; }
+h2 { font-size: 1.5rem; margin-bottom: 5px; color: var(--accent); }
 .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
 
-/* Strategy Selectors */
-.strategy-inputs {
+/* Visual Blackjack Table */
+.blackjack-table {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: rgba(10, 79, 54, 0.4);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.dealer-area, .player-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.table-label {
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+}
+
+.card-slots {
     display: flex;
     gap: 15px;
-    margin-bottom: 20px;
 }
-.input-group { flex: 1; display: flex; flex-direction: column; gap: 5px; }
-.strategy-select {
-    padding: 10px;
-    background: var(--bg-dark);
-    color: white;
-    border: 1px solid var(--text-muted);
-    border-radius: 6px;
-    font-size: 1.1rem;
+
+.card-slot {
+    width: 100px;
+    height: 145px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-slot.interactive-slot {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.card-slot.interactive-slot:hover {
+    border-color: var(--accent);
+    background-color: rgba(255, 215, 0, 0.1);
+}
+
+.plus-icon {
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.card-slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensures the red back fits nicely */
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.static-back {
+    border: none;
+    background: transparent;
 }
 
 .action-box {
-    background: rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0.4);
     padding: 20px;
     border-radius: 8px;
     text-align: center;
@@ -71,14 +131,22 @@ h2 { font-size: 1.5rem; margin-bottom: 5px; }
 .action-box .label { display: block; color: var(--text-muted); margin-bottom: 10px; }
 .action-result { font-size: 2rem; font-weight: bold; color: var(--accent); text-transform: uppercase; }
 
-/* Card Buttons */
-.card-grid {
+/* Counter Header Settings */
+.counter-header {
     display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 24px;
+    gap: 15px;
 }
 
+.settings { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 10px 15px; border-radius: 8px; }
+.settings input { width: 60px; padding: 5px; background: var(--panel-bg); color: white; border: 1px solid var(--text-muted); border-radius: 4px; }
+#reset-btn { background: var(--accent); color: #000; border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+
+/* Card Buttons */
+.card-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
 .card-btn {
     flex: 1 1 calc(20% - 10px);
     min-width: 50px;
@@ -94,38 +162,55 @@ h2 { font-size: 1.5rem; margin-bottom: 5px; }
 }
 .card-btn:active:not(:disabled) { transform: scale(0.95); }
 .card-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-
 .low { background-color: var(--low-card); }
 .neutral { background-color: var(--neutral-card); }
 .high { background-color: var(--high-card); }
 
-/* Remaining Cards Badge */
 .badge {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background-color: #000;
-    color: #fff;
-    font-size: 0.75rem;
-    padding: 2px 6px;
-    border-radius: 12px;
-    border: 1px solid #333;
-    font-weight: normal;
+    position: absolute; top: -8px; right: -8px; background-color: #000; color: #fff;
+    font-size: 0.75rem; padding: 2px 6px; border-radius: 12px; border: 1px solid #333;
 }
 
 /* Stats */
 .stats-grid { display: flex; justify-content: space-between; gap: 15px; }
-.stat-box {
-    background: rgba(0,0,0,0.2);
-    padding: 15px;
-    border-radius: 8px;
-    flex: 1;
-    text-align: center;
-}
+.stat-box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; flex: 1; text-align: center; }
 .stat-box .label { display: block; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px; }
 .stat-box .value { display: block; font-size: 1.8rem; font-weight: bold; }
 .highlight { color: var(--accent); }
 
+/* Modal Styles */
+.modal {
+    display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+}
+.modal-content {
+    background-color: var(--panel-bg);
+    margin: 5% auto; padding: 20px; border: 1px solid var(--accent); border-radius: 12px;
+    width: 90%; max-width: 600px; text-align: center; position: relative;
+}
+.close-modal { color: #aaa; position: absolute; top: 10px; right: 20px; font-size: 28px; font-weight: bold; cursor: pointer; }
+.close-modal:hover { color: white; }
+
+.suit-selector { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
+.suit-selector button {
+    padding: 15px 30px; font-size: 1.2rem; cursor: pointer; background: rgba(255,255,255,0.1);
+    color: white; border: 1px solid #444; border-radius: 8px;
+}
+.suit-selector button:hover { background: rgba(255,255,255,0.2); }
+
+.card-picker-grid {
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px;
+    max-height: 60vh; overflow-y: auto; padding: 10px;
+}
+.modal-card-img {
+    width: 80px; cursor: pointer; border-radius: 4px; transition: transform 0.2s;
+    border: 2px solid transparent;
+}
+.modal-card-img:hover { transform: scale(1.05); border-color: var(--accent); }
+
+#back-to-suits { margin-top: 20px; padding: 10px 20px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer; }
+
 @media (max-width: 600px) {
-    .stats-grid, .strategy-inputs { flex-direction: column; }
+    .stats-grid { flex-direction: column; }
+    .counter-header { flex-direction: column; align-items: center; }
 }
