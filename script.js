@@ -1,11 +1,14 @@
-// --- STATO DEL GIOCO ---
+// --- GAME STATE ---
 let totalDecks = 6;
 const CARDS_PER_DECK = 52;
 let totalCards = totalDecks * CARDS_PER_DECK;
 let cardsDealt = 0;
 let runningCount = 0;
 
-// --- ELEMENTI DOM ---
+// Object to track exact remaining copies of each card rank
+let remainingCards = {};
+
+// --- DOM ELEMENTS ---
 const decksInput = document.getElementById('decks');
 const resetBtn = document.getElementById('reset-btn');
 const runningCountDisplay = document.getElementById('running-count');
@@ -18,12 +21,13 @@ const pCard2 = document.getElementById('p-card-2');
 const dCard = document.getElementById('d-card');
 const actionResult = document.getElementById('action-result');
 
-const cardValues = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'A'];
+const cardValues = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+const strategyValues = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'A']; // Only 10 for faces in strategy
 
-// --- INIZIALIZZAZIONE ---
+// --- INITIALIZATION ---
 function init() {
     populateSelects();
-    updateDisplay();
+    resetShoe();
 }
 
 function resetShoe() {
@@ -31,41 +35,65 @@ function resetShoe() {
     totalCards = totalDecks * CARDS_PER_DECK;
     cardsDealt = 0;
     runningCount = 0;
+    
+    // Initialize available copies for each card rank (4 suits per deck)
+    cardValues.forEach(val => {
+        remainingCards[val] = totalDecks * 4;
+    });
+
     updateDisplay();
 }
 
 function updateDisplay() {
     runningCountDisplay.textContent = runningCount;
     let cardsLeft = totalCards - cardsDealt;
-    cardsLeft = cardsLeft < 0 ? 0 : cardsLeft;
-    cardsLeftDisplay.textContent = cardsLeft;
+    cardsLeftDisplay.textContent = cardsLeft > 0 ? cardsLeft : 0;
 
-    // Calcolo True Count = Running Count / Mazzi rimanenti arrotondati
+    // Calculate True Count = Running Count / Remaining Decks
     let decksRemaining = cardsLeft / CARDS_PER_DECK;
-    if (decksRemaining <= 0) decksRemaining = 1; // Evita divisione per zero
+    if (decksRemaining <= 0) decksRemaining = 1; // Prevent division by zero
     let trueCount = runningCount / decksRemaining;
     
     trueCountDisplay.textContent = trueCount > 0 ? "+" + trueCount.toFixed(2) : trueCount.toFixed(2);
     
-    // Aggiorna colore
-    if (trueCount >= 2) trueCountDisplay.style.color = '#22c55e'; // Vantaggio giocatore
-    else if (trueCount <= -1) trueCountDisplay.style.color = '#ef4444'; // Vantaggio banco
-    else trueCountDisplay.style.color = '#38bdf8';
+    // UI Color coding based on advantage
+    if (trueCount >= 2) trueCountDisplay.style.color = '#22c55e'; // Green: Player advantage
+    else if (trueCount <= -1) trueCountDisplay.style.color = '#ef4444'; // Red: House advantage
+    else trueCountDisplay.style.color = '#38bdf8'; // Blue: Neutral
+
+    // Update buttons badges and disable state
+    cardBtns.forEach(btn => {
+        let val = btn.getAttribute('data-val');
+        let rem = remainingCards[val];
+        
+        btn.querySelector('.badge').textContent = rem;
+        
+        if (rem <= 0) {
+            btn.disabled = true;
+        } else {
+            btn.disabled = false;
+        }
+    });
 }
 
-// --- LOGICA CONTEGGIO CARTE (Hi-Lo) ---
+// --- CARD COUNTING LOGIC (Hi-Lo System) ---
 cardBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-        if (cardsDealt >= totalCards) return;
-        
         let val = btn.getAttribute('data-val');
+        
+        // Prevent action if no cards of this rank are left
+        if (remainingCards[val] <= 0) return;
+
+        remainingCards[val]--;
         cardsDealt++;
 
+        // Hi-Lo rules
         if (['2','3','4','5','6'].includes(val)) {
             runningCount += 1;
         } else if (['10','J','Q','K','A'].includes(val)) {
             runningCount -= 1;
-        } // 7, 8, 9 sono 0
+        } 
+        // 7, 8, 9 are 0, so no change to runningCount
 
         updateDisplay();
     });
@@ -74,10 +102,10 @@ cardBtns.forEach(btn => {
 resetBtn.addEventListener('click', resetShoe);
 decksInput.addEventListener('change', resetShoe);
 
-// --- LOGICA BASIC STRATEGY ---
+// --- BASIC STRATEGY LOGIC ---
 function populateSelects() {
     [pCard1, pCard2, dCard].forEach(select => {
-        cardValues.forEach(val => {
+        strategyValues.forEach(val => {
             let option = document.createElement('option');
             option.value = val;
             option.textContent = val;
@@ -85,7 +113,6 @@ function populateSelects() {
         });
         select.addEventListener('change', calculateStrategy);
     });
-    calculateStrategy();
 }
 
 function getValue(card) {
@@ -102,9 +129,9 @@ function calculateStrategy() {
     let isSoft = (c1 === 'A' || c2 === 'A') && !isPair;
     let total = getValue(c1) + getValue(c2);
     
-    let action = "STAND"; // Default
+    let action = "STAND"; // Default fallback
 
-    // Motore decisionale molto basilare (Semplificazione multi-deck)
+    // Simplified multi-deck engine logic
     if (isPair) {
         let pVal = getValue(c1);
         if (pVal === 11 || pVal === 8) action = "SPLIT";
@@ -137,11 +164,11 @@ function calculateStrategy() {
 
     actionResult.textContent = action;
     
-    // Colora l'azione
-    if(action === "HIT") actionResult.style.color = "#22c55e"; // Verde
-    else if(action === "STAND") actionResult.style.color = "#ef4444"; // Rosso
-    else if(action === "DOUBLE") actionResult.style.color = "#eab308"; // Giallo
-    else if(action === "SPLIT") actionResult.style.color = "#a855f7"; // Viola
+    // Color coding for actions
+    if(action === "HIT") actionResult.style.color = "#22c55e"; // Green
+    else if(action === "STAND") actionResult.style.color = "#ef4444"; // Red
+    else if(action === "DOUBLE") actionResult.style.color = "#eab308"; // Yellow
+    else if(action === "SPLIT") actionResult.style.color = "#a855f7"; // Purple
 }
 
 init();
