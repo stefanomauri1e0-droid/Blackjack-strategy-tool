@@ -23,7 +23,16 @@ body {
 
 .container { max-width: 800px; width: 100%; }
 
-header { text-align: center; margin-bottom: 30px; }
+header { text-align: center; margin-bottom: 40px; }
+
+/* Dark Wrappers for spacing and casino feel */
+.dark-wrap { 
+    background: rgba(0,0,0,0.4); 
+    border-radius: 12px; 
+    padding: 20px; 
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5); 
+}
+.title-wrap { display: inline-block; padding: 15px 40px; margin-top: 10px; }
 header h1 { font-size: 3rem; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; text-shadow: 2px 2px 4px rgba(0,0,0,0.6); }
 
 .panel {
@@ -36,24 +45,35 @@ h2 { font-size: 1.5rem; margin-bottom: 5px; color: var(--accent); }
 
 /* Settings Formats */
 .settings { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 10px 15px; border-radius: 8px; }
-.settings input, .settings select { padding: 5px; background: var(--panel-bg); color: white; border: 1px solid var(--text-muted); border-radius: 4px; }
-.settings input { width: 60px; }
+.settings input { padding: 5px; background: var(--panel-bg); color: white; border: 1px solid var(--text-muted); border-radius: 4px; width: 60px; }
+
+/* Deck Toggle UI */
+.deck-toggle { display: flex; gap: 5px; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 8px; }
+.deck-btn { padding: 8px 16px; border: none; border-radius: 6px; background: transparent; color: var(--text-muted); cursor: pointer; font-weight: bold; transition: all 0.2s; }
+.deck-btn.active { background: var(--accent); color: #000; }
 
 /* Customizations for Basic Strategy Section */
-.strategy-header { display: flex; justify-content: space-between; flex-wrap: wrap; margin-bottom: 20px; align-items: flex-start; }
+.strategy-header { display: flex; justify-content: space-between; flex-wrap: wrap; margin-bottom: 20px; align-items: flex-start; gap: 15px; }
 .strategy-title { color: #ef4444; font-size: 2.2rem; } 
 .strategy-subtitle { font-size: 0.8rem; margin-bottom: 0; } 
 
 /* Visual Blackjack Table */
 .blackjack-table {
-    display: flex; flex-direction: column; gap: 30px; margin: 0 auto 25px auto; padding: 25px;
+    display: flex; flex-direction: column; gap: 25px; margin: 0 auto 25px auto; padding: 25px;
     background: rgba(10, 79, 54, 0.4); border-radius: 12px; border: 1px solid rgba(255, 215, 0, 0.2);
-    max-width: 450px; /* Constrains the width directly around the cards */
+    /* Shrinks the table nicely around the cards */
+    max-width: 520px; 
+    align-items: center;
 }
 
-.dealer-area, .player-area { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+.dealer-area { display: flex; flex-direction: column; align-items: center; gap: 15px; width: 100%; max-width: 480px; }
+.player-hands-container { display: flex; flex-direction: column; gap: 25px; width: 100%; align-items: center; }
+
+.hand-wrapper { display: flex; flex-direction: column; align-items: center; gap: 15px; width: 100%; max-width: 480px; }
 .table-label { text-transform: uppercase; font-weight: bold; letter-spacing: 1px; color: var(--text-muted); }
-.card-slots { display: flex; gap: 15px; }
+
+/* Fits exactly 4 cards per row beautifully */
+.card-slots { display: flex; flex-wrap: wrap; justify-content: center; max-width: 460px; gap: 15px; }
 
 .card-slot {
     width: 100px; height: 145px; background-color: rgba(0, 0, 0, 0.3); border: 2px dashed rgba(255, 255, 255, 0.3);
@@ -61,13 +81,34 @@ h2 { font-size: 1.5rem; margin-bottom: 5px; color: var(--accent); }
 }
 .card-slot.interactive-slot { cursor: pointer; transition: all 0.2s ease; }
 .card-slot.interactive-slot:hover { border-color: var(--accent); background-color: rgba(255, 215, 0, 0.1); }
+.card-slot.locked { cursor: not-allowed; border-color: rgba(255,255,255,0.1); }
 .plus-icon { font-size: 2rem; color: rgba(255, 255, 255, 0.5); }
 .card-slot img { width: 100%; height: 100%; object-fit: contain; position: absolute; top: 0; left: 0; }
 .static-back { border: none; background: transparent; }
 
-.action-box { background: rgba(0,0,0,0.4); padding: 20px; border-radius: 8px; text-align: center; border: 1px solid var(--accent); }
-.action-box .label { display: block; color: var(--text-muted); margin-bottom: 10px; }
-.action-result { font-size: 2rem; font-weight: bold; color: var(--accent); text-transform: uppercase; }
+/* Hand Hit/Stand Controls */
+.hand-controls { display: flex; gap: 15px; margin-top: 5px; }
+.hand-controls button { width: 45px; height: 45px; border-radius: 50%; border: none; font-size: 1.8rem; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; transition: 0.1s; }
+.hand-controls button:active { transform: scale(0.9); }
+.btn-remove-slot { background: #ef4444; }
+.btn-add-slot { background: #22c55e; }
+
+/* Action Box & Split */
+.action-box { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #374151; width: 100%; }
+.action-box .label { display: block; color: var(--text-muted); margin-bottom: 5px; font-size: 0.9rem; }
+.action-result { font-size: 1.8rem; font-weight: bold; text-transform: uppercase; }
+.action-result.hit { color: #22c55e; }
+.action-result.stand { color: #ef4444; }
+.action-result.double { color: #ffd700; }
+.action-result.split { color: #a855f7; }
+.action-result.waiting { color: var(--text-muted); font-size: 1.2rem; }
+
+.split-btn { background: #a855f7; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 1.2rem; font-weight: bold; cursor: pointer; text-transform: uppercase; width: 100%; margin-top: 5px; letter-spacing: 2px; }
+.split-btn:hover { background: #9333ea; }
+
+.strategy-footer { display: flex; justify-content: flex-end; }
+.reset-table-btn { background: #374151; color: white; padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+.reset-table-btn:hover { background: #ef4444; }
 
 /* Counter Header Settings */
 .counter-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
