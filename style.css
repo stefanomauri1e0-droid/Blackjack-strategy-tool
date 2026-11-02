@@ -48,8 +48,8 @@ h2 { font-size: 1.5rem; margin-bottom: 5px; color: var(--accent); }
 .settings input { padding: 5px; background: var(--panel-bg); color: white; border: 1px solid var(--text-muted); border-radius: 4px; width: 60px; }
 
 /* Deck Toggle UI */
-.deck-toggle { display: flex; gap: 5px; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 8px; }
-.deck-btn { padding: 8px 16px; border: none; border-radius: 6px; background: transparent; color: var(--text-muted); cursor: pointer; font-weight: bold; transition: all 0.2s; }
+.deck-toggle { display: flex; flex-wrap: wrap; gap: 5px; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 8px; max-width: 100%; }
+.deck-btn { padding: 8px 12px; border: none; border-radius: 6px; background: transparent; color: var(--text-muted); cursor: pointer; font-weight: bold; transition: all 0.2s; font-size: 0.9rem;}
 .deck-btn.active { background: var(--accent); color: #000; }
 
 /* Customizations for Basic Strategy Section */
@@ -101,6 +101,7 @@ h2 { font-size: 1.5rem; margin-bottom: 5px; color: var(--accent); }
 .action-result.stand { color: #ef4444; }
 .action-result.double { color: #ffd700; }
 .action-result.split { color: #a855f7; }
+.action-result.blackjack { color: #ffd700; text-shadow: 0 0 10px rgba(255,215,0,0.5); font-size: 2.2rem;} /* Added Blackjack style */
 .action-result.waiting { color: var(--text-muted); font-size: 1.2rem; }
 
 .split-btn { background: #a855f7; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 1.2rem; font-weight: bold; cursor: pointer; text-transform: uppercase; width: 100%; margin-top: 5px; letter-spacing: 2px; }
