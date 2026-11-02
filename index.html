@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Advanced Blackjack Card Counter and Basic Strategy Simulator. Optimize your gameplay with real-time stats.">
     <title>Blackjack Pro - Card Counter & Basic Strategy</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -23,7 +24,7 @@
                         <p class="subtitle strategy-subtitle">Click the empty slots to place the dealt cards</p>
                     </div>
                     
-                    <!-- UPDATED DECK TOGGLE UI -->
+                    <!-- COMPACT DECK TOGGLE -->
                     <div class="deck-toggle" id="strategy-deck-toggle">
                         <button class="deck-btn active" data-val="1">1 Deck</button>
                         <button class="deck-btn" data-val="2">2 Decks</button>
@@ -35,12 +36,12 @@
                 </div>
                 
                 <div class="blackjack-table">
-                    <!-- Dealer Side (Rendered by JS) -->
+                    <!-- Dealer Side -->
                     <div class="dealer-area dark-wrap" id="dealer-area">
                         <!-- Injected via JS -->
                     </div>
 
-                    <!-- Player Hands Container (Rendered by JS) -->
+                    <!-- Player Hands Container -->
                     <div id="player-hands-container" class="player-hands-container">
                         <!-- Injected via JS -->
                     </div>
@@ -103,6 +104,22 @@
                 </div>
             </section>
         </main>
+
+        <!-- FOOTER -->
+        <footer class="site-footer">
+            <div class="footer-links">
+                <a href="https://github.com/tuo-username/tua-repo" target="_blank">Source Code</a>
+                <span class="separator">|</span>
+                <span>MIT License</span>
+                <span class="separator">|</span>
+                <span>Last Updated: Nov 2026</span>
+            </div>
+            <p class="copyright">Created by <strong>Stefano Mauri</strong></p>
+            <p class="disclaimer">
+                <strong>Disclaimer:</strong> This tool is for educational and entertainment purposes only. 
+                It does not guarantee winnings. Blackjack is a game of chance and the house always has an edge. Play responsibly.
+            </p>
+        </footer>
     </div>
 
     <!-- MODAL FOR CARD SELECTION -->
@@ -118,7 +135,6 @@
             </div>
             
             <div id="card-picker-grid" class="card-picker-grid" style="display: none;">
-                <!-- Cards will be injected here by JS -->
             </div>
             <button id="back-to-suits" style="display: none;" onclick="resetModalToSuits()">Back to Suits</button>
         </div>
