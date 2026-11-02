@@ -135,7 +135,8 @@ window.resetTable = function() {
 }
 
 window.addCardSlot = function(hIndex) {
-    let limit = strategyDecks === 1 ? 11 : 12;
+    // 11 max for 1 deck, 12 for 2-6 decks
+    let limit = strategyDecks === 1 ? 11 : 12; 
     if (playerHands[hIndex].cards.length < limit) {
         playerHands[hIndex].cards.push(null);
         playerHands[hIndex].locked.push(false);
@@ -191,10 +192,8 @@ function renderTable() {
     let handsHtml = '';
     playerHands.forEach((hand, hIndex) => {
         
-        // Evaluate logic to show actions and split button
         let canSplit = false;
         if (hand.cards.length === 2 && hand.cards[0] && hand.cards[1]) {
-            // Check if numeric values are equal for splitting
             if (getNumericValue(hand.cards[0].val) === getNumericValue(hand.cards[1].val)) {
                 if (playerHands.length < 4) canSplit = true;
             }
@@ -270,7 +269,7 @@ window.showCards = function(suit) {
         let fileName = exactCardId + '.png';
         let path = `assets/images/Playing%20Cards/${suit}/${fileName}`;
         
-        // Count limits
+        // Count limits based on exact copies
         let countOnTable = 0;
         if (dealerCard && dealerCard.exactId === exactCardId) countOnTable++;
         playerHands.forEach(hand => {
@@ -325,10 +324,25 @@ function evaluateDynamicHand(cardsArray, dealerCardObj) {
     let dVal = getNumericValue(dealerCardObj.val);
     let action = "STAND";
 
+    // BLACKJACK CHECK
     if (cardsArray.length === 2) {
         let c1 = cardsArray[0].val;
         let c2 = cardsArray[1].val;
-        let isPair = (c1 === c2); // We check actual string val so A,A is pair, 10,10 is pair.
+        let isBlackjack = (c1 === 'A' && getNumericValue(c2) === 10) || (c2 === 'A' && getNumericValue(c1) === 10);
+        
+        if (isBlackjack) {
+            // Se la mano è divisa (split), un 21 naturale NON è considerato un Blackjack
+            if (playerHands.length > 1) {
+                return { text: "STAND", cssClass: "stand" };
+            }
+            return { text: "BLACKJACK!", cssClass: "blackjack" };
+        }
+    }
+
+    if (cardsArray.length === 2) {
+        let c1 = cardsArray[0].val;
+        let c2 = cardsArray[1].val;
+        let isPair = (c1 === c2); 
         let isSoft = (c1 === 'A' || c2 === 'A') && !isPair;
         let total = getNumericValue(c1) + getNumericValue(c2);
 
@@ -343,9 +357,7 @@ function evaluateDynamicHand(cardsArray, dealerCardObj) {
             else if (pVal <= 4 && dVal <= 6) action = "SPLIT";
             else action = "HIT";
             
-            // Revert Split if max hands reached
             if (action === "SPLIT" && playerHands.length >= 4) {
-                // If we can't split, we treat it as a hard total.
                 isPair = false; 
             }
         } 
@@ -390,16 +402,13 @@ function evaluateDynamicHand(cardsArray, dealerCardObj) {
         }
 
         if (isSoft) {
-            // Basic soft rules for > 2 cards (No doubles allowed)
-            if (sum >= 18) action = "STAND"; // Some rules hit soft 18 vs 9,10,A but stand is safer fallback
+            if (sum >= 18) action = "STAND"; 
             else action = "HIT";
         } else {
-            // Hard totals > 2 cards
             if (sum >= 17) action = "STAND";
             else if (sum >= 13 && dVal <= 6) action = "STAND";
             else if (sum === 12 && dVal >= 4 && dVal <= 6) action = "STAND";
             else action = "HIT"; 
-            // Note: 9, 10, 11 would normally double, but with >2 cards you can only HIT
         }
     }
 
