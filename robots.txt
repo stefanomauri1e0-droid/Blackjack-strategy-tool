@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://https://stefanomauri1e0-droid.github.io/Blackjack-strategy-tool/sitemap.xml
