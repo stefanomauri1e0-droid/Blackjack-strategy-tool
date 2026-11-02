@@ -9,7 +9,9 @@
 <body>
     <div class="container">
         <header>
-            <h1>Blackjack Pro</h1>
+            <div class="title-wrap dark-wrap">
+                <h1>Blackjack Pro</h1>
+            </div>
         </header>
 
         <main>
@@ -20,50 +22,29 @@
                         <h2 class="strategy-title">Basic Strategy</h2>
                         <p class="subtitle strategy-subtitle">Click the empty slots to place the dealt cards</p>
                     </div>
-                    <div class="settings">
-                        <label for="strategy-decks">Table Decks:</label>
-                        <select id="strategy-decks">
-                            <option value="1" selected>1 Deck</option>
-                            <option value="2">2 Decks</option>
-                            <option value="3">3+ Decks</option>
-                        </select>
+                    
+                    <!-- NEW DECK TOGGLE UI -->
+                    <div class="deck-toggle" id="strategy-deck-toggle">
+                        <button class="deck-btn active" data-val="1">1 Deck</button>
+                        <button class="deck-btn" data-val="2">2 Decks</button>
+                        <button class="deck-btn" data-val="3">3+ Decks</button>
                     </div>
                 </div>
                 
                 <div class="blackjack-table">
-                    <!-- Dealer Side -->
-                    <div class="dealer-area">
-                        <div class="table-label">Dealer's Hand</div>
-                        <div class="card-slots">
-                            <div class="card-slot static-back">
-                                <img src="assets/images/Playing%20Cards/red_card_back.png" alt="Card Back">
-                            </div>
-                            <div class="card-slot interactive-slot" id="dealer-slot" data-role="dealer" onclick="openCardSelector('dealer')">
-                                <span class="plus-icon">+</span>
-                                <img src="" alt="" class="selected-card-img" style="display: none;">
-                            </div>
-                        </div>
+                    <!-- Dealer Side (Rendered by JS) -->
+                    <div class="dealer-area dark-wrap" id="dealer-area">
+                        <!-- Injected via JS -->
                     </div>
 
-                    <!-- Player Side -->
-                    <div class="player-area">
-                        <div class="table-label">Your Hand</div>
-                        <div class="card-slots">
-                            <div class="card-slot interactive-slot" id="player-slot-1" data-role="player1" onclick="openCardSelector('player1')">
-                                <span class="plus-icon">+</span>
-                                <img src="" alt="" class="selected-card-img" style="display: none;">
-                            </div>
-                            <div class="card-slot interactive-slot" id="player-slot-2" data-role="player2" onclick="openCardSelector('player2')">
-                                <span class="plus-icon">+</span>
-                                <img src="" alt="" class="selected-card-img" style="display: none;">
-                            </div>
-                        </div>
+                    <!-- Player Hands Container (Rendered by JS) -->
+                    <div id="player-hands-container" class="player-hands-container">
+                        <!-- Injected via JS -->
                     </div>
                 </div>
 
-                <div class="action-box">
-                    <span class="label">Recommended Action:</span>
-                    <span class="action-result" id="action-result">Waiting for cards...</span>
+                <div class="strategy-footer">
+                    <button id="reset-table-btn" class="reset-table-btn" onclick="resetTable()">Reset Table</button>
                 </div>
             </section>
 
@@ -86,19 +67,16 @@
                 </div>
                 
                 <div class="card-grid">
-                    <!-- Low Cards (+1) -->
                     <button class="card-btn low" data-val="2">2 <span class="badge"></span></button>
                     <button class="card-btn low" data-val="3">3 <span class="badge"></span></button>
                     <button class="card-btn low" data-val="4">4 <span class="badge"></span></button>
                     <button class="card-btn low" data-val="5">5 <span class="badge"></span></button>
                     <button class="card-btn low" data-val="6">6 <span class="badge"></span></button>
                     
-                    <!-- Neutral Cards (0) -->
                     <button class="card-btn neutral" data-val="7">7 <span class="badge"></span></button>
                     <button class="card-btn neutral" data-val="8">8 <span class="badge"></span></button>
                     <button class="card-btn neutral" data-val="9">9 <span class="badge"></span></button>
                     
-                    <!-- High Cards (-1) -->
                     <button class="card-btn high" data-val="10">10 <span class="badge"></span></button>
                     <button class="card-btn high" data-val="J">J <span class="badge"></span></button>
                     <button class="card-btn high" data-val="Q">Q <span class="badge"></span></button>
